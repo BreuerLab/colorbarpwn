@@ -66,7 +66,7 @@ function varargout = colorbarpwn(cmin, cmax, varargin)
 %                              returns the colormap array.
 %
 % cmap = colorbarpwn(__, 'off'), cmap returns the colormap array only,
-%                                without generating the colorbar.
+%                                without creating the colorbar.
 % -------------------------------------------------------------------------
 % Examples:
 %
@@ -106,9 +106,9 @@ function varargout = colorbarpwn(cmin, cmax, varargin)
 % version 1.2.0
 %   - Changed the function name from >>colorbarPWN to >>colorbarpwn for
 %     friendlier user experience.
-%   - Added an input argument 'off' for turning off which disables
-%     generating the colorbar and returns the colormap array only.
-%   - Updateds in headline description including a few examples.
+%   - Added an option 'off' which disables creatting the colorbar and only
+%     returns the colormap array.
+%   - Updates in headline description including a few examples.
 % Xiaowei He
 % 04/27/2022
 % =========================================================================
