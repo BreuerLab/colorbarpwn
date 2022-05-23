@@ -3,29 +3,31 @@ Positive-white-negative colormap with zero in white - colorbarpwn
 
 Create positive-white-negative colormap and colorbar. Customized colormap/colorbar options are available.
 
-[h, cmap] = colorbarpwn(ax, cmin, cmax, 'options')
+[h, cmap] = colorbarpwn(caxis1, caxis2, 'options')
 
-COLORBARPWN creates Positive-White-Negative colormap and colorbar.
+COLORBARPWN creates positive-white-negative colormap and colorbar.
 
-White is asigned to zero, if While location is not specified.
+White is asigned to zero, if while location is not specified.
 
 Customized colormap/colorbar options are available for:
-  - automatic/manual Positive, White, and Negative color.
-  - automatic/manual Positive, Negative, or Positive-Negative colormap.
-  - automatic/manual White position (at zero or specified).
-  - reversed default Positive and Negative colors.
+
+  - automatic/manual positive, white, and negative color.
+  - automatic/manual positive, negative, or positive-negative colormap.
+  - automatic/manual white position (at zero or specified).
+  - reversed default positive and negative colors.
+  - reversed colorbar direction by switching the order of input limits.
   - number of colormap levels.
   - LaTeX colorbar label.
   - log scale colormap with adjustable loginess.
   - returning colorbar handle and/or colormap array.
- 
+
 -------------------------------------------------------------------------
 
 Syntax:
 
-colorbarpwn(cmin, cmax)
+colorbarpwn(caxis1, caxis2)
 
-colorbarpwn(cmin, cmax, 'options')
+colorbarpwn(caxis1, caxis2, 'options')
 
 colorbarpwn(target, __)
 
@@ -39,47 +41,78 @@ cmap = colorbarpwn(__, 'off')
 
 Description:
 
-colorbarpwn(cmin, cmax): creates automatic colormap and colorbar based on
-                         caxis([cmin, cmax]), where White is at zero,
-                         Positive is in red, and Negative is in blue.
+colorbarpwn(caxis1, caxis2): 
+
+creates automatic colormap and colorbar
+                             based on caxis([cmin, cmax]), where
+                             cmin = min([caxis1, caxis2]) and
+                             cmax = max([caxis1, caxis2]). The colormap
+                             has a default style in which zero is in
+                             white, positive is in red, and negative is
+                             in blue. When caxis1 < caxis2, the colorbar
+                             is displayed in 'normal' direction; when
+                             caxis1 > caxis2, the colorbar is displayed
+                             in 'reversed' direction.
 
 'options':
 
 (one input/output option can be used independently or with other options)
 
-colorbarpwn(__, 'rev'): creates reversed default colormap, where Positive
-                        is in blue and Negative is in red. 'rev' will be
+colorbarpwn(__, 'rev'): 
+
+creates reversed default colormap, where positive
+                        is in blue and negative is in red. 'rev' will be
                         overwritten if 'colorP' or 'colorN' is manually
                         specified.
 
-colorbarpwn(__, 'colorP', [R G B]): customizes Positive color with RGB.
+colorbarpwn(__, 'colorP', [R G B]): 
 
-colorbarpwn(__, 'colorN', [R G B]): customizes Negative color with RGB.
+customizes positive color with RGB.
 
-colorbarpwn(__, 'colorW', [R G B]): customizes White color with RGB.
+colorbarpwn(__, 'colorN', [R G B]): 
 
-colorbarpwn(__, 'full'): enforces full Positive-Negative color map with
-                         White is at the middle of [cmin, cmax].
+customizes negative color with RGB.
 
-colorbarpwn(__, 'full', Wvalue): enforces full Positive-Negative colormap
-                                 and specifies White position by Wvalue.
+colorbarpwn(__, 'colorW', [R G B]): 
 
-colorbarpwn(__, 'level', Nlevel): customizes the number ofcolormap
+customizes white/zero color with RGB.
+
+colorbarpwn(__, 'full'): 
+
+enforces full positive-negative color map with
+                         white is at the middle of [cmin, cmax].
+
+colorbarpwn(__, 'full', Wvalue): 
+
+enforces full positive-negative colormap
+                                 and specifies white position by Wvalue.
+
+colorbarpwn(__, 'level', Nlevel): 
+
+customizes the number of colormap
                                   levels. The default Nlevel is 128 if
                                   not specified
 
-colorbarpwn(__, 'label', 'LaTeXString'): creates a LaTeX colorbar label.
+colorbarpwn(__, 'label', 'LaTeXString'):
 
-colorbarpwn(__, 'log'): creates log scale colormap for coarser
+creates a LaTeX colorbar label.
+
+colorbarpwn(__, 'log'): 
+
+creates log scale colormap for coarser
                         increment near White (smaller White region) with
                         defualt loginess = 1. (citation [1]).
 
-colorbarpwn(__, 'log', loginess): creates log scale colormap and
+colorbarpwn(__, 'log', loginess):
+
+creates log scale colormap and
                                   specifies the loginess value to make
                                   smaller White region (loginess > 0) or
                                   larger White region (loginess < 0).
 
-colorbarpwn(target, __): sets the colormap for the figure, axes, or chart
+colorbarpwn(target, __): 
+
+sets the colormap for the figure, axes, or chart
                          specified by target, instead of for the current
                          figure and adds a colorbar to the axes or chart
                          specified by target. Specify the target axes or
@@ -87,67 +120,93 @@ colorbarpwn(target, __): sets the colormap for the figure, axes, or chart
                          previous syntaxes. Similar to the combined use
                          of colormap(target, map) and colorbar(target).
 
-h = colorbarpwn(__): h returns a colorbar handle.
+h = colorbarpwn(__): 
 
-[h, cmap] = colorbarpwn(__): h returns a colorbar handle and cmap
+h returns a colorbar handle.
+
+[h, cmap] = colorbarpwn(__):
+
+h returns a colorbar handle and cmap
                              returns the colormap array.
 
-cmap = colorbarpwn(__, 'off'): cmap returns the colormap array only,
-                               without creating the colorbar.
+cmap = colorbarpwn(__, 'off'):
 
+cmap returns the colormap array only,
+                               without creating the colorbar.
+                               
 -------------------------------------------------------------------------
 
 Examples:
 
 colorbarpwn(-1, 2, 'level', 20, 'colorP', [0.6 0.4 0.3]):
-  
+
   creates a colormap and a colorbar from -1 to 2 where 0 is in White
-  color with 20 levels on one side and with customized Positive color
+  color with 20 levels on one side and with customized positive color
   [0.6 0.4 0.3].
 
-colorbarpwn(ax1, 1, 2, 'log', 1.2, 'label', '$\alpha$'):
-  
+colorbarpwn(ax1, 2, 1, 'log', 1.2, 'label', '$\alpha$'):
+
   on axis ax1, creates a colormap and a colorbar from 1 to 2 with only
-  Positive color where the White color region is shortened by a loginess
-  of 1.2; the colorbar label desplays $\alpha$ with LaTeX interpreter.
+  positive color where the white color region is shortened by a loginess
+  of 1.2; the colorbar is displayed in reversed direction since 2 > 1;
+  the colorbar label desplays $\alpha$ with LaTeX interpreter.
 
 h = colorbarpwn(ax2, 1, 3, 'full', 1.5):
-  
+
   on axis ax2, creates a colormap and a colorbar from 1 to 3 with full
-  default Positive-Negative color spectrum where White color is aligned
+  default positive-negative color spectrum where white color is aligned
   with the specified Wvalue 1.5 following the 'full' option; h returns
   the colorbar handle.
 
 [h, cmap] = colorbarpwn(-4, -2, 'full', 'colorW', [0.8 0.8 0.8], ...
                         'colorN', [0.2 0.4 0.3], 'level', 30):
-  
+                        
   creates a colormap and a colorbar from -4 to -2 with full
-  Positive-Negative color spectrum with 30 levels on each side where
-  White color is customized with [0.8 0.8 0.8] and the Negative end of
-  the spectrum is in customized color [0.2 0.4 0.3]; the White color is
-  aligned with the mean of cmin and cmax -3 on the colorbar since no
+  positive-negative color spectrum with 30 levels on each side where
+  white color is customized with [0.8 0.8 0.8] and the negative end of
+  the spectrum is in customized color [0.2 0.4 0.3]; the white color is
+  aligned with the mean of caxis1 and caxis2 -3 on the colorbar since no
   Wvalue is specifice with 'full' option; h returns the colorbar handle
   and cmap returns the 59 X 3 colormap array generated.
 
 cmap = colorbarpwn(-2, 2, 'log', -1, 'rev', 'off'):
-  
-  returns a 255 X 3 colormap array to cmap without creating the colorbar;
-  the colormap is with a reversed defualt color spectrum and the White
-  color region is enlarged by a loginess of 1.
 
+  returns a 255 X 3 colormap array to cmap whlie disables displaying the
+  colorbar; the colormap is with a reversed defualt color spectrum and
+  the white color region is enlarged by a loginess of -1.
+  
 =========================================================================
 
+version 1.4.0
+
+  - Added support for reversed colorbar direction by switching cmin and
+    cmax order, so the input limits became colorbarpwn(caxis1, caxis2).
+    E.g., colorbarpwn(2, -1) displays a -1 to 2 colorbar in reversed
+    direction, which is equivalent to cb.Direction = 'rev'.
+  - Removal of the caxix1 < caxis2 rule accordingly.
+  - Fixed a bug that causes an error when using 0 or 1 as the first caxis
+    limit, i.e., colorbarpwn(0, caxis2) or colorbarpwn(1, caixs2).
+  - Updates in headline description and examples.
+
+Xiaowei He
+
+05/23/2022
+
+-------------------------------------------------------------------------
+
 version 1.3.0
+
   - Added support for setting colormap and displaying colorbar on
     specific target, e.g., colorbarpwn(ax, cmin, cmax).
   - Updates and corrections in headline description and examples.
+
 Xiaowei He
 
 05/07/2022
 
 -------------------------------------------------------------------------
-
 version 1.2.0
+
   - Changed the function name from >>colorbarPWN to >>colorbarpwn for
     friendlier user experience.
   - Added an option 'off' which disables creatting the colorbar and only
@@ -161,6 +220,7 @@ Xiaowei He
 -------------------------------------------------------------------------
 
 version 1.1.1
+
   - Minor code improvement.
   - Updates in headline descriptions.
 
@@ -171,6 +231,7 @@ Xiaowei He
 -------------------------------------------------------------------------
 
 version 1.1.0
+
   - Added an output argument for the colormap array.
   - Added an input argument 'rev' for reversed default Positive and
     Negative colors, where Positive is in blue and Negative is in red.
@@ -184,6 +245,7 @@ Xiaowei He
 -------------------------------------------------------------------------
 
 version 1.0.1
+
   - Fixed a bug when output coloarbar handle.
 
 Xiaowei He
@@ -209,13 +271,11 @@ https://www.mathworks.com/matlabcentral/fileexchange/64831-non-linearly-spaced-v
 MATLAB Central File Exchange.
 
 function nonLinVec = nonLinspace(mn, mx, num)
-
-loginess = 1.5; % Increasing loginess will decreasing the spacing towards
-
-% the end of the vector and increase it towards the beginning.
-
-nonLinVec = (mx - mn)/loginess*log10((linspace(0, 10^(loginess) - 1, num)+ 1)) + mn;
-
+    loginess = 1.5; % Increasing loginess will decreasing the spacing towards
+    
+                    % the end of the vector and increase it towards the beginning.
+                    
+    nonLinVec = (mx - mn)/loginess*log10((linspace(0, 10^(loginess) - 1, num)+ 1)) + mn;    
 end
 
 =========================================================================
