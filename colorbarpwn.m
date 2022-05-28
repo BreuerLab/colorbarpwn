@@ -3,6 +3,7 @@ function varargout = colorbarpwn(varargin)
 % White is asigned to zero, if while location is not specified.
 % Customized colormap/colorbar options are available for:
 %   - automatic/manual positive, white, and negative color.
+%   - predefined colors for different combinations of colormap spectrum.
 %   - automatic/manual positive, negative, or positive-negative colormap.
 %   - automatic/manual white position (at zero or specified).
 %   - reversed default positive and negative colors.
@@ -34,7 +35,7 @@ function varargout = colorbarpwn(varargin)
 %                              in blue. When caxis1 < caxis2, the colorbar
 %                              is displayed in 'normal' direction; when
 %                              caxis1 > caxis2, the colorbar is displayed
-%                              in 'reversed' direction.
+%                              in 'reversed' direction (see e.g.[3]).
 %
 % 'options':
 % (one input/output option can be used independently or with other options)
@@ -42,25 +43,44 @@ function varargout = colorbarpwn(varargin)
 % colorbarpwn(__, 'rev'): creates reversed default colormap, where positive
 %                         is in blue and negative is in red. 'rev' will be
 %                         overwritten if 'colorP' or 'colorN' is manually
-%                         specified.
+%                         specified. See e.g.[6]
+%
+% colorbarpwn(__, 'dft', 'colors'): change defaul colors in the order of
+%                                   positive, zero, negative with
+%                                   predefined colors. 'colors' is an 1 X 3
+%                                   char variable which is a combination of
+%                                   any 3 characters from 'r' (red), 'b'
+%                                   (blue), 'g' (green), 'p' (purple), 'y'
+%                                   (yellow), 'w' (white), and 'k' (black).
+%                                   E.g., 'rgb', 'ywg', 'bwp', etc. 'dft'
+%                                   will be overwritten if 'colorP',
+%                                   'colorN', or 'colorW' is manually
+%                                   specified. See e.g.[5].
 %
 % colorbarpwn(__, 'colorP', [R G B]): customizes positive color with RGB.
+%                                     See e.g.[1].
 %
 % colorbarpwn(__, 'colorN', [R G B]): customizes negative color with RGB.
+%                                     See e.g.[5].
 %
 % colorbarpwn(__, 'colorW', [R G B]): customizes white/zero color with RGB.
+%                                     See e.g.[5].
 %
 % colorbarpwn(__, 'full'): enforces full positive-negative color map with
 %                          white is at the middle of [cmin, cmax].
+%                          See e.g.[5].
 %
 % colorbarpwn(__, 'full', Wvalue): enforces full positive-negative colormap
 %                                  and specifies white position by Wvalue.
+%                                  See e.g.[4].
 %
 % colorbarpwn(__, 'level', Nlevel): customizes the number of colormap
-%                                   levels. The default Nlevel is 128 if
-%                                   not specified
+%                                   levels (see e.g.[1, 5]). The default
+%                                   Nlevel is 128 if 'level' option is not
+%                                   used.
 %
 % colorbarpwn(__, 'label', 'LaTeXString'): creates a LaTeX colorbar label.
+%                                          See e.g.[3].
 %
 % colorbarpwn(__, 'log'): creates log scale colormap for coarser
 %                         increment near White (smaller White region) with
@@ -68,8 +88,9 @@ function varargout = colorbarpwn(varargin)
 %
 % colorbarpwn(__, 'log', loginess): creates log scale colormap and
 %                                   specifies the loginess value to make
-%                                   smaller White region (loginess > 0) or
-%                                   larger White region (loginess < 0).
+%                                   smaller White region (loginess > 0, see
+%                                   e.g.[3]) or larger White region
+%                                   (loginess < 0, see e.g.[6]).
 %
 % colorbarpwn(target, __): sets the colormap for the figure, axes, or chart
 %                          specified by target, instead of for the current
@@ -78,51 +99,71 @@ function varargout = colorbarpwn(varargin)
 %                          chart as the first argument in any of the
 %                          previous syntaxes. Similar to the combined use
 %                          of colormap(target, map) and colorbar(target).
+%                          See e.g.[3, 4].
 %
-% h = colorbarpwn(__): h returns a colorbar handle.
+% h = colorbarpwn(__): h returns a colorbar handle. See e.g.[4].
 %
-% [h, cmap] = colorbarpwn(__): h returns a colorbar handle and cmap
-%                              returns the colormap array.
+% [h, cmap] = colorbarpwn(__): h returns a colorbar handle and cmap returns
+%                              the colormap array. See e.g.[5].
 %
 % cmap = colorbarpwn(__, 'off'): cmap returns the colormap array only,
-%                                without creating the colorbar.
+%                                without creating the colorbar. See
+%                                e.g.[6].
 % -------------------------------------------------------------------------
 %
 % Examples:
 %
-% colorbarpwn(-1, 2, 'level', 20, 'colorP', [0.6 0.4 0.3]):
-%   creates a colormap and a colorbar from -1 to 2 where 0 is in White
-%   color with 20 levels on one side and with customized positive color
-%   [0.6 0.4 0.3].
+% [1] colorbarpwn(-1, 2, 'level', 20, 'colorP', [0.6 0.4 0.3]):
+%       creates a colormap and a colorbar from -1 to 2 where 0 is in white
+%       color with 20 levels on one side and with customized positive color
+%       [0.6 0.4 0.3].
 %
-% colorbarpwn(ax1, 2, 1, 'log', 1.2, 'label', '$\alpha$'):
-%   on axis ax1, creates a colormap and a colorbar from 1 to 2 with only
-%   positive color where the white color region is shortened by a loginess
-%   of 1.2; the colorbar is displayed in reversed direction since 2 > 1;
-%   the colorbar label desplays $\alpha$ with LaTeX interpreter.
+% [2] colorbarpwn(-1, 2, 'dft', 'ywg'):
+%       creates a colormap and a colorbar from -1 to 2 where the default
+%       positive color is changed to predefined yellow 'y', the default
+%       zero color remains white 'w', and the default negative color is
+%       changed to predefined green 'g'.
 %
-% h = colorbarpwn(ax2, 1, 3, 'full', 1.5):
-%   on axis ax2, creates a colormap and a colorbar from 1 to 3 with full
-%   default positive-negative color spectrum where white color is aligned
-%   with the specified Wvalue 1.5 following the 'full' option; h returns
-%   the colorbar handle.
+% [3] colorbarpwn(ax1, 2, 1, 'log', 1.2, 'label', '$\alpha$'):
+%       on axis ax1, creates a colormap and a colorbar from 1 to 2 with
+%       only positive color where the white color region is shortened by a
+%       loginess of 1.2; the colorbar is displayed in reversed direction
+%       as 2 > 1; the colorbar label desplays $\alpha$ with LaTeX
+%       interpreter.
 %
-% [h, cmap] = colorbarpwn(-4, -2, 'full', 'colorW', [0.8 0.8 0.8], ...
-%                         'colorN', [0.2 0.4 0.3], 'level', 30):
-%   creates a colormap and a colorbar from -4 to -2 with full
-%   positive-negative color spectrum with 30 levels on each side where
-%   white color is customized with [0.8 0.8 0.8] and the negative end of
-%   the spectrum is in customized color [0.2 0.4 0.3]; the white color is
-%   aligned with the mean of caxis1 and caxis2 -3 on the colorbar since no
-%   Wvalue is specifice with 'full' option; h returns the colorbar handle
-%   and cmap returns the 59 X 3 colormap array generated.
+% [4] h = colorbarpwn(ax2, 1, 3, 'full', 1.5):
+%       on axis ax2, creates a colormap and a colorbar from 1 to 3 with
+%       full default positive-negative color spectrum where white color is
+%       aligned with the specified Wvalue 1.5 following the 'full' option;
+%       h returns the colorbar handle.
 %
-% cmap = colorbarpwn(-2, 2, 'log', -1, 'rev', 'off'):
-%   returns a 255 X 3 colormap array to cmap whlie disables displaying the
-%   colorbar; the colormap is with a reversed defualt color spectrum and
-%   the white color region is enlarged by a loginess of -1.
+% [5] [h, cmap] = colorbarpwn(-4, -2, 'full', 'colorW', [0.8 0.8 0.8], ...
+%                             'colorN', [0.2 0.4 0.3], 'level', 30):
+%       creates a colormap and a colorbar from -4 to -2 with full
+%       positive-negative color spectrum with 30 levels on each side where
+%       white color is customized with [0.8 0.8 0.8] and the negative end
+%       of the spectrum is in customized color [0.2 0.4 0.3]; the white
+%       color is aligned with the mean of caxis1 and caxis2 -3 on the
+%       colorbar as no Wvalue is specifice after 'full' option; h returns
+%       the colorbar handle and cmap returns the 59 X 3 colormap array
+%       generated.
+%
+% [6] cmap = colorbarpwn(-2, 2, 'log', -1, 'rev', 'off'):
+%       returns a 255 X 3 colormap array to cmap whlie disables displaying
+%       the colorbar; the colormap is with a reversed defualt color
+%       spectrum and the white color region is enlarged by a loginess of -1.
 % =========================================================================
 %
+% version 1.5.0
+%   - Added several predefined low-saturation colors and an input argument
+%     'dft' which allows for changing the default red-white-blue colormap
+%     with combinations of these predefined colors. See description of
+%     colormap(__, 'dft', 'colors') for details.
+%   - Fixed a bug that causes errors when the colorbar lable string is the
+%     same as one of the input arguments.
+% Xiaowei He
+% 05/24/2022
+% -------------------------------------------------------------------------
 % version 1.4.0
 %   - Added support for reversed colorbar direction by switching cmin and
 %     cmax order, so the input limits became colorbarpwn(caxis1, caxis2).
@@ -186,9 +227,8 @@ function varargout = colorbarpwn(varargin)
 %     nonLinVec = (mx - mn)/loginess*log10((linspace(0, 10^(loginess) - 1, num)+ 1)) + mn;
 % end
 % =========================================================================
-
     nargoutchk(0, 2)
-    narginchk(2, 17)
+    narginchk(2, 19)
     % check input arguments
     % determine axis handle
     if ishandle(varargin{1}) && ~isnumeric(varargin{1})
@@ -210,27 +250,62 @@ function varargout = colorbarpwn(varargin)
     if ~isscalar(caxis1) || ~isscalar(caxis2)
         error(['colorbarpwn(' axmsg 'caxis1, caxis2): caxis1 and caxis2 must be scalars.'])
     end
-
     if length(varargin) > 2+iax
         options = varargin(3+iax:end);
     else
         options = {};
     end
+
+    % colorbar label
+    labelflag = ~isempty(find(strcmp(options, 'label'), 1));
+    if labelflag
+        if length(options) > find(strcmp(options, 'label'), 1)
+            labelpar = options{find(strcmp(options, 'label'), 1)+1};
+            if ischar(labelpar)
+                labelstr = labelpar;
+                ilabel = find(strcmp(options, 'label'), 1);
+                options(ilabel+1) = [];
+                options(ilabel) = [];
+            else
+                error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''label'', ''LaTeXString''): LaTeXString must be a char variable.'])
+            end
+        else
+            error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''label'', ''LaTeXString''): LaTeXString must be specified.'])
+        end
+    end
+
+    % default color switch
+    dftflag = ~isempty(find(strcmp(options, 'dft'), 1));
+    if dftflag
+        if length(options) > find(strcmp(options, 'dft'), 1)
+            dftpar = options{find(strcmp(options, 'dft'), 1)+1};
+            if ischar(dftpar) && length(dftpar) == 3
+                precolor = dftpar;
+                idft = find(strcmp(options, 'dft'), 1);
+                options(idft+1) = [];
+                options(idft) = [];
+            else
+                error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''dft'', ''colors''): colors must be an 1 X 3 char variable as a combiation of ''r'', ''g'', ''b'',''p'', ''y'',''w'', ''k''.'])
+            end
+        else
+            error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''dft'', ''colors''): colors must be specified.'])
+        end
+    end
+
+    % check input arguments
     if length(options) >= 1
-        if isempty(find(strcmp(options{1}, {'level', 'label', 'colorP', 'colorN', 'colorW', 'log', 'full', 'rev', 'off'}), 1))
+        if isempty(find(strcmp(options{1}, {'level', 'colorP', 'colorN', 'colorW', 'log', 'full', 'rev', 'off'}), 1))
             error(['colorbar(' axmsg 'caxis1, caxis2, ' num2str(options{1}) '): invalid input argument ' num2str(options{1}) '.'])
         else
             for i = 2 : length(options)
                 if isnumeric(options{i}) && isnumeric(options{i-1})
                     error(['colorbar(' axmsg 'caxis1, caxis2, ' num2str(options{i}) '): invalid input argument ' num2str(options{i}) '.'])
                  elseif ischar(options{i}) ...
-                        && isempty(find(strcmp(options{i}, {'level', 'label', 'colorP', 'colorN', 'colorW', 'log', 'full', 'rev', 'off'}), 1)) ...
-                        && ~strcmp(options{i-1}, 'label')
+                        && isempty(find(strcmp(options{i}, {'level', 'colorP', 'colorN', 'colorW', 'log', 'full', 'rev', 'off'}), 1))
                     error(['colorbar(' axmsg 'caxis1, caxis2, ''' options{i} '''): invalid input argument ''' options{i} '''.'])
                 end
             end
         end
-
     end
 
     % determine colorbar direction
@@ -245,7 +320,6 @@ function varargout = colorbarpwn(varargin)
     else
         error(['colorbarpwn(' axmsg 'caxis1, caxis2): caxis1 must not equal to caxis2.'])
     end
-
 
     % full spectrum switch
     fullflag = ~isempty(find(strcmp(options, 'full'), 1));
@@ -272,15 +346,6 @@ function varargout = colorbarpwn(varargin)
     end
 
     % determine colormap range
-%     if cmin >= cmax
-%         error(['colorbarpwn(' axmsg 'caxis1, caxis2): cmin must be less than cmax.'])
-%     elseif cmin >= 0 && ~fullflag
-%         mapflag = 1;
-%     elseif cmax <= 0 && ~fullflag
-%         mapflag = -1;
-%     else
-%         mapflag = 0;
-%     end
     if cmin >= 0 && ~fullflag
         mapflag = 1;
     elseif cmax <= 0 && ~fullflag
@@ -306,6 +371,39 @@ function varargout = colorbarpwn(varargin)
         Nlevel = 128;
     end
 
+    % predefined colors
+    red = [0.72, 0.15, 0.15];
+    green = [0.32, 0.54, 0.42];
+    blue = [0.15, 0.45, 0.68];
+    purple = [0.43, 0.29, 0.47];
+    yellow = [0.59, 0.42, 0.23];
+    white = [1, 1, 1];
+    black = [0.15, 0.15, 0.15];
+    dftpwn = [red; white; blue]; % default red/positive white/zero blue/negative
+    % change default colors with predefined colors
+    if dftflag
+        for i = 1 : 3
+            switch precolor(i)
+                case 'r'
+                    dftpwn(i, :) = red;
+                case 'g'
+                    dftpwn(i, :) = green;
+                case 'b'
+                    dftpwn(i, :) = blue;
+                case 'p'
+                    dftpwn(i, :) = purple;
+                case 'y'
+                    dftpwn(i, :) = yellow;
+                case 'w'
+                    dftpwn(i, :) = white;
+                case 'k'
+                    dftpwn(i, :) = black;
+                otherwise
+                    error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''dft'', ''colors''): colors must be an 1 X 3 char variable as a combiation of ''r'', ''g'', ''b'',''p'', ''y'',''w'', ''k''.'])
+            end
+        end
+    end
+
     % reversed default positive and negative color switch
     revflag = ~isempty(find(strcmp(options, 'rev'), 1));
     if revflag
@@ -314,13 +412,14 @@ function varargout = colorbarpwn(varargin)
             error(['colorbarpwn(' axmsg 'caxis1, caxis2, ' num2str(options{find(strcmp(options, 'rev'), 1)+1}) ...
                    '): invalid input argument ' num2str(options{find(strcmp(options, 'rev'), 1)+1}) '.'])
         end
-        dftP = [0.0000, 0.4470, 0.8210]; % default blue
-        dftN = [0.8500, 0.2250, 0]; % default red
+        dftP = dftpwn(3, :); % default blue
+        dftW = dftpwn(2, :);
+        dftN = dftpwn(1, :); % default red
     else
-        dftP = [0.8500, 0.2250, 0]; % default red
-        dftN = [0.0000, 0.4470, 0.8210]; % default blue
+        dftP = dftpwn(1, :); % default red
+        dftW = dftpwn(2, :);
+        dftN = dftpwn(3, :); % default blue
     end
-
 
     % manual color switches
     % colorP
@@ -331,13 +430,16 @@ function varargout = colorbarpwn(varargin)
             if ~ischar(Ppar) && isrow(Ppar) && length(Ppar) == 3
                 colorP = Ppar;
             else
-                error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorP'', [R G B]): colorP input must be a 1x3 row array.'])
+                error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorP'', [R G B]): colorP input must be an 1x3 row array.'])
             end
         else
             error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorP'', [R G B]): colorP must be specified.'])
         end
         if revflag
-            warning(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorP'', [R G B], ''rev''): ''rev'' is overwritten since ''colorP'' is specified.'])
+            warning(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorP'', [R G B], ''rev''): ''rev'' is overwritten as ''colorP'' is specified.'])
+        end
+        if dftflag
+            warning(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorP'', [R G B], ''dft'', ''' precolor '''): ''' precolor ''' is overwritten as ''colorP'' is specified.'])
         end
     else
         colorP = dftP; % default positive color
@@ -350,13 +452,16 @@ function varargout = colorbarpwn(varargin)
             if ~ischar(Npar) && isrow(Npar) && length(Npar) == 3
                 colorN = Npar;
             else
-                error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorN'', [R G B]): colorN input must be a 1x3 row array.'])
+                error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorN'', [R G B]): colorN input must be an 1x3 row array.'])
             end
         else
             error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorN'', [R G B]): colorN must be specified.'])
         end
         if revflag
-            warning(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorN'', [R G B], ''rev''): ''rev'' is overwritten since ''colorN'' is specified.'])
+            warning(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorN'', [R G B], ''rev''): ''rev'' is overwritten as ''colorN'' is specified.'])
+        end
+        if dftflag
+            warning(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorN'', [R G B], ''dft'', ''' precolor '''): ''' precolor ''' is overwritten as ''colorN'' is specified.'])
         end
     else
         colorN = dftN; % default negative color
@@ -369,13 +474,16 @@ function varargout = colorbarpwn(varargin)
             if ~ischar(Wpar) && isrow(Wpar) && length(Wpar) == 3
                 colorW = Wpar;
             else
-                error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorW'', [R G B]): colorW input must be a 1x3 row array.'])
+                error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorW'', [R G B]): colorW input must be an 1x3 row array.'])
             end
         else
             error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorW'', [R G B]): colorW must be specified.'])
         end
+        if dftflag
+            warning(['colorbarpwn(' axmsg 'caxis1, caxis2, ''colorW'', [R G B], ''dft'', ''' precolor '''): ''' precolor ''' is overwritten as ''colorW'' is specified.'])
+        end
     else
-        colorW = [1, 1, 1]; % default white
+        colorW = dftW; % default white
     end
    
     % log scale colormap switch
@@ -450,22 +558,7 @@ function varargout = colorbarpwn(varargin)
         end
     end
 
-    % colormap label
-    labelflag = ~isempty(find(strcmp(options, 'label'), 1));
-    if labelflag
-        if length(options) > find(strcmp(options, 'label'), 1)
-            labelpar = options{find(strcmp(options, 'label'), 1)+1};
-            if ischar(labelpar)
-                labelstr = labelpar;
-            else
-                error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''label'', ''LaTexString''): LaTexString must be a char variable.'])
-            end
-        else
-            error(['colorbarpwn(' axmsg 'caxis1, caxis2, ''label'', ''LaTexString''): LaTexString must be specified.'])
-        end
-    end
-
-    % colorbar generation switch
+    % colorbar display switch
     offflag = ~isempty(find(strcmp(options, 'off'), 1));
     if offflag
         if length(options) > find(strcmp(options, 'off'), 1) ...
