@@ -162,7 +162,7 @@ function varargout = colorbarpwn(varargin)
 %   - Fixed a bug that causes errors when the colorbar lable string is the
 %     same as one of the input arguments.
 % Xiaowei He
-% 05/24/2022
+% 05/28/2022
 % -------------------------------------------------------------------------
 % version 1.4.0
 %   - Added support for reversed colorbar direction by switching cmin and
