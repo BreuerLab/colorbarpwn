@@ -216,7 +216,7 @@ version 1.5.0
     'dft' which allows for changing the default red-white-blue colormap
     with combinations of these predefined colors. See description of
     colormap(__, 'dft', 'colors') for details.
-  - Fixed a bug that causes errors when the colorbar lable string is the
+  - Fixed a bug that causes errors when the colorbar label string is the
     same as one of the input arguments.
 
 Xiaowei He
